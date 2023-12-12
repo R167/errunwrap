@@ -2,7 +2,6 @@ package errunwrap
 
 import (
 	"flag"
-	"fmt"
 	"go/ast"
 	"go/types"
 
@@ -54,9 +53,6 @@ func run(pass *analysis.Pass) (interface{}, error) {
 				return
 			}
 
-			if stmt.Name.Name == "UhOhError" {
-				fmt.Println("here")
-			}
 			errKind := wrapsError(pass, stmt.Type)
 			if errKind == none {
 				return
@@ -113,7 +109,7 @@ func unwrapMethod(t types.Type) (*types.Func, bool) {
 
 // wrapsError checks if the type wraps or contains an error or []error
 func wrapsError(pass *analysis.Pass, ts ast.Expr) errorCount {
-	return wrapsErrorEmbed(pass, pass.TypesInfo.TypeOf(ts), true)
+	return wrapsErrorEmbed(pass, pass.TypesInfo.TypeOf(ts), true, false)
 }
 
 type errorCount int
@@ -129,16 +125,16 @@ const (
 // This allows recursively checking embedded structs for errors while skipping non-embedded fields.
 //
 // Returns if the type wraps an error, or if it wraps an array of errors.
-func wrapsErrorEmbed(pass *analysis.Pass, t types.Type, checkStructs bool) errorCount {
+func wrapsErrorEmbed(pass *analysis.Pass, t types.Type, checkStructs bool, allowError bool) errorCount {
 	switch t := t.(type) {
 	case nil, *types.Basic:
 		return none
 	// case *types.Named:
 	// 	return wrapsErrorEmbed(pass, t.Underlying(), embed)
 	case *types.Pointer:
-		return wrapsErrorEmbed(pass, t.Elem(), checkStructs)
+		return wrapsErrorEmbed(pass, t.Elem(), checkStructs, allowError)
 	case *types.Slice:
-		if wrapsErrorEmbed(pass, t.Elem(), checkStructs) == none {
+		if wrapsErrorEmbed(pass, t.Elem(), checkStructs, true) == none {
 			return none
 		}
 		return array
@@ -158,7 +154,7 @@ func wrapsErrorEmbed(pass *analysis.Pass, t types.Type, checkStructs bool) error
 			if field.Embedded() {
 				toCheck = field.Type().Underlying()
 			}
-			switch wrapsErrorEmbed(pass, toCheck, recurse) {
+			switch wrapsErrorEmbed(pass, toCheck, recurse, true) {
 			case array:
 				return array
 			case one:
@@ -169,6 +165,9 @@ func wrapsErrorEmbed(pass *analysis.Pass, t types.Type, checkStructs bool) error
 			return one
 		}
 	default:
+		if !allowError && types.IsInterface(t) {
+			return none
+		}
 		if isErrorType(t) {
 			return one
 		}
