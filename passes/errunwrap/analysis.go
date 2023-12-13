@@ -90,14 +90,11 @@ func isErrorType(t types.Type) bool {
 
 // unwrapMethod checks if the type has an Unwrap method
 func unwrapMethod(t types.Type) (*types.Func, bool) {
-	// Check if the type is a named type
-	named, ok := t.(*types.Named)
-	if !ok {
-		return nil, false
-	}
+	// We always get a concrete type here, however we want to check the pointer receiver as well
+	methods := types.NewMethodSet(types.NewPointer(t))
 
-	for i := 0; i < named.NumMethods(); i++ {
-		method := named.Method(i)
+	for i := 0; i < methods.Len(); i++ {
+		method := methods.At(i).Obj().(*types.Func)
 
 		// Check if the method is the Unwrap method
 		if method.Name() == "Unwrap" {
