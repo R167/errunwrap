@@ -20,6 +20,10 @@ func (e *EmbeddableError3) Unwrap() error {
 	return e.anError
 }
 
+type EmbeddableError4 struct {
+	EmbeddableError3
+}
+
 type FieldError struct { // want `error type FieldError does not implement Unwrap method`
 	aField EmbeddableError
 }
