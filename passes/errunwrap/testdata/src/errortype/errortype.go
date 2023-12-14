@@ -5,6 +5,9 @@ import "errors"
 // Should be ignored
 type AliasError = error
 
+// don't check interfaces
+type KindOfError error
+
 type ArrayError []error
 
 type StructError struct {

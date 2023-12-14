@@ -1,6 +1,6 @@
 package embedable
 
-type EmbeddableError struct { // want `error type EmbeddableError does not implement Unwrap method`
+type EmbeddableError struct { // want `error type EmbeddableError does not implement Unwrap\(\) error`
 	anError error
 }
 
@@ -8,7 +8,7 @@ func (e *EmbeddableError) Error() string {
 	return e.anError.Error()
 }
 
-type EmbeddableError2 struct { // want `error type EmbeddableError2 does not implement Unwrap method`
+type EmbeddableError2 struct { // want `error type EmbeddableError2 does not implement Unwrap\(\) error`
 	EmbeddableError
 }
 
@@ -24,7 +24,7 @@ type EmbeddableError4 struct {
 	EmbeddableError3
 }
 
-type FieldError struct { // want `error type FieldError does not implement Unwrap method`
+type FieldError struct { // want `error type FieldError does not implement Unwrap\(\) error`
 	aField EmbeddableError
 }
 

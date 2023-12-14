@@ -8,7 +8,7 @@ func (m MagicWrapper[T]) String() T {
 	return m.val
 }
 
-type UhOhError struct { // want `error type UhOhError does not implement Unwrap method`
+type UhOhError struct { // want `error type UhOhError does not implement Unwrap\(\) error`
 	MagicWrapper[error]
 }
 

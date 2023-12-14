@@ -16,7 +16,15 @@ func TestErrorType(t *testing.T) {
 	)
 }
 
+func TestStrictMode(t *testing.T) {
+	testdata := analysistest.TestData()
+	strictUnwrap = true
+	defer func() { strictUnwrap = false }()
+	analysistest.Run(t, testdata, Analyzer,
+		"strict",
+	)
+}
+
 func TestWrapsError(t *testing.T) {
 	t.Parallel()
-
 }
