@@ -21,3 +21,5 @@
 go.work
 
 /errunwrap
+# always include the folders though
+!errunwrap/
