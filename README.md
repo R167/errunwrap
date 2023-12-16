@@ -1,5 +1,7 @@
 # errunwrap
 
+[![CI](https://github.com/R167/errunwrap/actions/workflows/ci.yaml/badge.svg)](https://github.com/R167/errunwrap/actions/workflows/ci.yaml)
+
 Check for errors which wrap other errors without implementing the Unwrap method.
 
 ## Why?
