@@ -1,3 +1,4 @@
+// Check for error types that do not implement the Unwrap method
 package errunwrap
 
 import (
@@ -12,7 +13,7 @@ import (
 
 var Analyzer = &analysis.Analyzer{
 	Name:     "errunwrap",
-	Doc:      "reports custom errors without an Unwrap method",
+	Doc:      "report error types without an Unwrap method",
 	Requires: []*analysis.Analyzer{inspect.Analyzer},
 	Run:      run,
 }
