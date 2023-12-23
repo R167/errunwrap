@@ -1,3 +1,8 @@
+// You can run this package directly as
+//
+//	errunwrap ./...
+//
+// Refer to the README for more information.
 package main
 
 import (
